@@ -1,0 +1,20 @@
+  services:
+    #Controller
+    Numerique1\Components\Restresources\Controller\:
+        resource: '../src/Components/Restresources/Controller/'
+        tags: ['controller.service_arguments']
+    #Command
+    Numerique1\Components\Restresources\Command\CreateResourceFileCommand:
+        arguments: ['@maker.doctrine_helper']
+        tags: ['console.command']
+    #FormType
+    Numerique1\Components\Restresources\Form\Type\:
+        resource: '../src/Components/Restresources/Form/Type/'
+        tags: ['form.type']
+    #Services
+    Numerique1\Components\Restresources\Service\:
+        resource: '../src/Components/Restresources/Service/*'
+    #Body listener
+    Numerique1\Components\Restresources\Event\Listener\BodyListener:
+      tags:
+        - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest}
