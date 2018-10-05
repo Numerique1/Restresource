@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Dumper;
 /**
  * Class GenerateResourceConfigurationCommand
@@ -20,17 +21,18 @@ class CreateResourceFileCommand extends ContainerAwareCommand
 
     private $doctrineHelper;
 
-    public function __construct(DoctrineHelper $doctrineHelper)
+    public function __construct(DoctrineHelper $doctrineHelper, KernelInterface $kernel)
     {
         parent::__construct();
         $this->doctrineHelper = $doctrineHelper;
+        $this->kernelRootDir = $kernel->getRootDir();
     }
 
     protected function configure()
     {
         $this->setName('rest-resources:file:create')
             ->setDescription('Generates yml file for the configuration of the entity API')
-            ;
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -66,7 +68,8 @@ class CreateResourceFileCommand extends ContainerAwareCommand
         }
 
         #Bundle
-        $default = str_replace("\\", "/","{$bundle}Resources/Restresource/{$file['resource']}.resource.yml");
+//        str_replace("\\", "/","{$bundle}Resources/Restresource/{$file['resource']}.resource.yml"
+        $default = $this->kernelRootDir;
         $question = new Question("<info>Where we might put the file ? </info> <fg=white;>(default: {$default})</> \n > ", "{$default}");
         $path = $questionHelper->ask($input, $output, $question);
 

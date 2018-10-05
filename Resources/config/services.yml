@@ -1,20 +1,25 @@
-  services:
-    #Controller
-    Numerique1\Components\Restresources\Controller\:
-        resource: '../src/Components/Restresources/Controller/'
-        tags: ['controller.service_arguments']
-    #Command
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false       # Allows optimizing the container by removing unused services; this also means
+                            # fetching services directly from the container via $container->get() won't work.
+                            # The best practice is to be explicit about your dependencies anyway.
+#   Services
+    Numerique1\Components\Restresources\Service\ResourceFileProvider:
+      arguments: []
+#   Controller
+    Numerique1\Components\Restresources\Controller\ResourceController:
+      tags: ['controller.service_arguments']
+#   Command
     Numerique1\Components\Restresources\Command\CreateResourceFileCommand:
-        arguments: ['@maker.doctrine_helper']
+        arguments: ['@maker.doctrine_helper', '@kernel']
         tags: ['console.command']
-    #FormType
+#   FormType
     Numerique1\Components\Restresources\Form\Type\:
-        resource: '../src/Components/Restresources/Form/Type/'
+        resource: '../../Form/Type/'
         tags: ['form.type']
-    #Services
-    Numerique1\Components\Restresources\Service\:
-        resource: '../src/Components/Restresources/Service/*'
-    #Body listener
+#   Listener
     Numerique1\Components\Restresources\Event\Listener\BodyListener:
       tags:
         - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest}

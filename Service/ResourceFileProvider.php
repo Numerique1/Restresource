@@ -1,5 +1,5 @@
 <?php
-namespace Numerique1\Components\Restresources\Service\Provider;
+namespace Numerique1\Components\Restresources\Service;
 
 use Numerique1\Kernel;
 use Psr\Container\ContainerInterface;

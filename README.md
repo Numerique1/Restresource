@@ -6,6 +6,12 @@ This component has for purpose to provide a simple REST API with no development.
  
 ## How to use
   - Your entity repository must implement our `ResourceRepositoryInterface`
+  - Import our controller on your routing file 
+  ``` 
+    restresources_api:
+       resource: ../../vendor/numerique1/restresources/Numerique1/Components/Restresources/Controller/
+       type: annotation
+  ```
   - Create your *.resource.yml `ex. users.resource.yml` file with the `restresources:file:create` command
 
 ## More

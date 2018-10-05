@@ -3,7 +3,7 @@
 namespace Numerique1\Components\Restresources\Controller;
 
 use Numerique1\Components\Restresources\Repository\ResourceRepositoryInterface;
-use Numerique1\Components\Restresources\Service\Provider\ResourceFileProvider;
+use Numerique1\Components\Restresources\Service\ResourceFileProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,6 +31,7 @@ class ResourceController extends AbstractController
      */
     public function cgetAction(Request $request, ResourceFileProvider $rfp, $resource)
     {
+        $this->get
         $em = $this->getDoctrine()
             ->getManager();
         #Get configuration file {$resource}.resource.yml
