@@ -1,5 +1,5 @@
 <?php
-namespace Numerique1\Components\RestresourcesBundle;
+namespace Numerique1\Components\Restresources\RestresourcesBundle;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
