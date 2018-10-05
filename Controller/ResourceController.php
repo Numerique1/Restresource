@@ -31,7 +31,6 @@ class ResourceController extends AbstractController
      */
     public function cgetAction(Request $request, ResourceFileProvider $rfp, $resource)
     {
-        $this->get
         $em = $this->getDoctrine()
             ->getManager();
         #Get configuration file {$resource}.resource.yml
