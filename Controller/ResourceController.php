@@ -189,8 +189,8 @@ class ResourceController extends AbstractController
         $data = $repository->get($id);
         #Check granted
         $this->denyAccessUnlessGranted('UPDATE', $data);
-        $form = $this->createForm($file['type'], $data, ['method' => 'POST']);
-        return $this->processFrom($request, $form, $data, 'POST');
+        $form = $this->createForm($file['type'], $data, ['method' => 'PATCH']);
+        return $this->processFrom($request, $form, $data, 'PATCH');
     }
 
     /**
