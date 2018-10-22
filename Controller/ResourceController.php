@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 /**
  * Class PrototypeController
@@ -19,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ResourceController extends AbstractController
 {
     const GROUP_MINIMAL = 'minimal';
-
+    const DATETIME_FORMAT = "Y-m-d\TH:i:s.v\Z";
     /**
      * @Route("/api/{resource}", methods={"GET"})
      * @param Request $request
@@ -57,7 +58,7 @@ class ResourceController extends AbstractController
             $data = ['data' => $data];
         }
         $content = $this->get('serializer')
-            ->serialize($data, 'json', ['groups' => [$group]]);
+            ->serialize($data, 'json', ['groups' => [$group], 'datetime_format' => self::DATETIME_FORMAT]);
         return new JsonResponse($content, 200, [], true);
     }
 
@@ -90,7 +91,7 @@ class ResourceController extends AbstractController
         #Check granted
         $this->denyAccessUnlessGranted('VIEW', $data);
         $content = $this->get('serializer')
-            ->serialize($data, 'json', ['groups' => [$request->get('_group') ?? self::GROUP_MINIMAL]]);
+            ->serialize($data, 'json', ['groups' => [$request->get('_group') ?? self::GROUP_MINIMAL], 'datetime_format' => self::DATETIME_FORMAT]);
         return New JsonResponse($content, 200, [], true);
     }
 
