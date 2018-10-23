@@ -2,6 +2,7 @@
 
 namespace Numerique1\Components\Restresources\Controller;
 
+use Numerique1\Components\Restresources\Model\ResourceInterface;
 use Numerique1\Components\Restresources\Repository\ResourceRepositoryInterface;
 use Numerique1\Components\Restresources\Service\ResourceFileProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,7 +54,7 @@ class ResourceController extends AbstractController
             return new JsonResponse([], 200);
         }
         #Check granted
-        $this->denyAccessUnlessGranted('VIEW_LIST', $data[0]);
+        $this->denyAccessUnlessGranted(ResourceInterface::CAN_LIST, $data[0]);
         if ($request->get('wrap') === 'true') {
             $data = ['data' => $data];
         }
@@ -89,7 +90,7 @@ class ResourceController extends AbstractController
         }
         $data = $repository->get($id);
         #Check granted
-        $this->denyAccessUnlessGranted('VIEW', $data);
+        $this->denyAccessUnlessGranted(ResourceInterface::CAN_RETRIEVE, $data);
         $content = $this->get('serializer')
             ->serialize($data, 'json', ['groups' => [$request->get('_group') ?? self::GROUP_MINIMAL], 'datetime_format' => self::DATETIME_FORMAT]);
         return New JsonResponse($content, 200, [], true);
@@ -115,7 +116,7 @@ class ResourceController extends AbstractController
         #Get $data
         $data = new $class();
         #Check granted
-        $this->denyAccessUnlessGranted('CREATE', $data);
+        $this->denyAccessUnlessGranted(ResourceInterface::CAN_CREATE, $data);
         $form = $this->createForm($file['type'], $data, ['method' => 'POST']);
         return $this->processFrom($request, $form, $data, 'POST');
     }
@@ -189,7 +190,7 @@ class ResourceController extends AbstractController
         }
         $data = $repository->get($id);
         #Check granted
-        $this->denyAccessUnlessGranted('UPDATE', $data);
+        $this->denyAccessUnlessGranted(ResourceInterface::CAN_UPDATE, $data);
         $form = $this->createForm($file['type'], $data, ['method' => 'PATCH']);
         return $this->processFrom($request, $form, $data, 'PATCH');
     }
@@ -221,7 +222,7 @@ class ResourceController extends AbstractController
         }
         $data = $repository->get($id);
         #Check granted
-        $this->denyAccessUnlessGranted('DELETE', $data);
+        $this->denyAccessUnlessGranted(ResourceInterface::CAN_DELETE, $data);
         $em->remove($data);
         $em->flush();
         return New JsonResponse('deleted', 200, [], false);
