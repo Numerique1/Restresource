@@ -17,12 +17,12 @@ This component has for purpose to provide a simple REST API with no development.
 ## More
 
 The API security is handled by the Symfony voters we use the following attributes : 
- - VIEW_LIST
- - VIEW
- - CREATE
+ - list
+ - retrieve
+ - create
+ - update
+ - delete
  - CREATE_{$childResource} __(this one is special see. Child resources)__
- - UPDATE
- - DELETE
  ------
  ------
  - Each `GET` and `CGET` actions has a `_group` parameters which must match your serializer "Groups" annotation, the default used is `minimal`.
