@@ -16,13 +16,15 @@ trait EntityMetadataFilterTrait
      * @param Doctrine\ORM\QueryBuilder|null $qb
      * @return Doctrine\ORM\QueryBuilder
      */
-    public function filterByMetadataFieldNames(array $filters, Doctrine\ORM\QueryBuilder $qb = null)
+    public function filterByMetadataFieldNames(array $filters, QueryBuilder $qb = null)
     {
         if (!$qb) {
             $qb = $this->createQueryBuilder('entity');
         }
         foreach ($filters as $name => $value) {
-            $value = strtolower($value);
+            if(!is_string($value)){
+                continue;
+            }
             $fields = $this->getClassMetadata()->getFieldNames();
             if (in_array($name, $fields)) {
                 $this->createGuessExprFilter($qb,"LOWER({$qb->getRootAliases()[0]}.{$name})", $value);
@@ -39,10 +41,17 @@ trait EntityMetadataFilterTrait
     public function createGuessExprFilter(QueryBuilder &$qb, string $path, string $value)
     {
         list($expr, $value) = $this->guessExpr($value);
-        $qb->andWhere(
-            $qb->expr()->$expr($path, ":value")
-        )
-        ->setParameter(':value', "$value");
+        if(!empty($value)){
+            $qb->andWhere(
+                $qb->expr()->$expr($path, ":value")
+            )
+            ->setParameter(':value', $value);
+        }
+        else{
+            $qb->andWhere(
+                $qb->expr()->$expr($path)
+            );
+        }
     }
 
     /**
@@ -52,6 +61,8 @@ trait EntityMetadataFilterTrait
      */
     public function guessExpr($value){
         $operators = [
+            'isNotNull',
+            'isNull',
             'like',
             'lte',
             'gte',
@@ -68,7 +79,8 @@ trait EntityMetadataFilterTrait
                 $expr = $operator;
 
                 $_value = substr($value, strlen($operator), strlen($value));
-                $value = ($operator === 'like') ?  $_value."%" : $_value;
+                $value = ($operator === 'like') ?  strtolower($_value)."%" :  strtolower($_value);
+                ;
                 break;
             }
         }
