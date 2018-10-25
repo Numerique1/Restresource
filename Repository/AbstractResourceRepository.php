@@ -1,7 +1,6 @@
 <?php
 namespace Numerique1\Components\Restresources\Repository;
 
-use App\Octavio\Entity\Core\Internal;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
