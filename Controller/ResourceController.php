@@ -53,10 +53,10 @@ class ResourceController extends AbstractController
         $arraySort = array();
         $sort = $parameters['_sort'] ?? null;
         if ($sort) {
-            if (strpos('-', $sort) === 0) {
+            if (strpos($sort, '-') === 0) {
                 $arraySort = array(ltrim($sort, '-') => 'DESC');
             } else {
-                $arraySort = array($sort => 'DESC');
+                $arraySort = array($sort => 'ASC');
             }
         }
         unset($parameters['_sort']);
