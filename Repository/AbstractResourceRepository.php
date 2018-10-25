@@ -15,7 +15,7 @@ class AbstractResourceRepository extends ServiceEntityRepository implements Reso
      * @param QueryBuilder $qb
      * @param              $sort
      */
-    private function addOrderBy(&$qb, $sort)
+    protected function addOrderBy(&$qb, $sort)
     {
         foreach ($sort as $field => $type)
         {
