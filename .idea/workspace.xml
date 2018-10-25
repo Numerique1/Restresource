@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cb89fb46-bb5b-401b-af6f-67fa7e7649c6" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/Repository/AbstractResourceRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/Repository/AbstractResourceRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Repository/EntityMetadataFilterTrait.php" beforeDir="false" afterPath="$PROJECT_DIR$/Repository/EntityMetadataFilterTrait.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -25,11 +26,17 @@
       <file leaf-file-name="AbstractResourceRepository.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Repository/AbstractResourceRepository.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="257">
-              <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
-              <folding>
-                <element signature="e#46#83#0#PHP" expanded="true" />
-              </folding>
+            <state relative-caret-position="102">
+              <caret line="6" selection-start-line="6" selection-end-line="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EntityMetadataFilterTrait.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Repository/EntityMetadataFilterTrait.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-763">
+              <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
             </state>
           </provider>
         </entry>
@@ -58,6 +65,7 @@
       <list>
         <option value="$PROJECT_DIR$/Repository/ResourceRepositoryInterface.php" />
         <option value="$PROJECT_DIR$/Controller/ResourceController.php" />
+        <option value="$PROJECT_DIR$/Repository/EntityMetadataFilterTrait.php" />
         <option value="$PROJECT_DIR$/Repository/AbstractResourceRepository.php" />
       </list>
     </option>
@@ -139,12 +147,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1540474965489</updated>
-      <workItem from="1540474967156" duration="2433000" />
+      <workItem from="1540474967156" duration="2549000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2433000" />
+    <option name="totallyTimeSpent" value="2549000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="27" width="1920" height="1053" extended-state="6" />
@@ -197,18 +205,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Repository/EntityMetadataFilterTrait.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="23" column="17" lean-forward="true" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="17" />
+        <state relative-caret-position="-763">
+          <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Repository/AbstractResourceRepository.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
-          <folding>
-            <element signature="e#46#83#0#PHP" expanded="true" />
-          </folding>
+        <state relative-caret-position="102">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
         </state>
       </provider>
     </entry>

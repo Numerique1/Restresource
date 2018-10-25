@@ -15,9 +15,9 @@ trait EntityMetadataFilterTrait
      * Check if filters name exists in the EntityMetadata:fieldNames and filter with a LIKE value%
      *
      * @param array $filters
-     * @param Doctrine\ORM\QueryBuilder|null $qb
+     * @param QueryBuilder|null $qb
      *
-     * @return Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function filterByMetadataFieldNames(array $filters, QueryBuilder $qb = null)
     {
