@@ -9,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -38,7 +37,7 @@ class ResourceController extends AbstractController
         #Get configuration file {$resource}.resource.yml
         $file = $rfp->getFromResource($resource);
         if (!in_array('CGET', $file['actions'])) {
-            throw new AccessDeniedHttpException();
+            throw new NotFoundHttpException();
         }
         $class = $file['class'];
         #Get $data
@@ -47,9 +46,27 @@ class ResourceController extends AbstractController
             throw new \LogicException;
         }
         $parameters = $request->query->all();
+        #Group
         $group = $parameters['_group'] ?? self::GROUP_MINIMAL;
         unset($parameters['_group']);
-        $data = $repository->cget($parameters);
+        #Sort
+        $arraySort = array();
+        $sort = $parameters['_sort'] ?? null;
+        if ($sort) {
+            if (strpos('-', $sort) === 0) {
+                $arraySort = array(ltrim($sort, '-') => 'DESC');
+            } else {
+                $arraySort = array($sort => 'DESC');
+            }
+        }
+        unset($parameters['_sort']);
+        #Limit
+        $limit = $parameters['_limit'] ?? null;
+        unset($parameters['_limit']);
+        #Offset
+        $offset = $parameters['_offset'] ?? null;
+        unset($parameters['_offset']);
+        $data = $repository->cget($parameters, $arraySort, $limit, $offset);
         if (!isset($data[0])) {
             return new JsonResponse([], 200);
         }
@@ -80,7 +97,7 @@ class ResourceController extends AbstractController
         #Get configuration file {$resource}.resource.yml
         $file = $rfp->getFromResource($resource);
         if (!in_array('GET', $file['actions'])) {
-            throw new AccessDeniedHttpException();
+            throw new NotFoundHttpException();
         }
         $class = $file['class'];
         #Get $data
@@ -110,7 +127,7 @@ class ResourceController extends AbstractController
         #Get configuration file {$resource}.resource.yml
         $file = $rfp->getFromResource($resource);
         if (!in_array('POST', $file['actions'])) {
-            throw new AccessDeniedHttpException();
+            throw new NotFoundHttpException();
         }
         $class = $file['class'];
         #Get $data
