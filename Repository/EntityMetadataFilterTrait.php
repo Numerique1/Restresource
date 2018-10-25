@@ -10,7 +10,6 @@ use Doctrine\ORM\QueryBuilder;
  */
 trait EntityMetadataFilterTrait
 {
-
     /**
      * Check if filters name exists in the EntityMetadata:fieldNames and filter with a LIKE value%
      *
@@ -43,7 +42,7 @@ trait EntityMetadataFilterTrait
     }
 
     /**
-     * @param QueryBuilder $qb
+     * @param QueryBuilder $qbtokenStorage
      * @param string       $path
      * @param string       $value
      */

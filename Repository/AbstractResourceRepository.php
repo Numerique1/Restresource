@@ -12,6 +12,8 @@ use Doctrine\ORM\QueryBuilder;
  */
 class AbstractResourceRepository extends ServiceEntityRepository implements ResourceRepositoryInterface
 {
+    use EntityMetadataFilterTrait;
+    
     /**
      * @param QueryBuilder $qb
      * @param              $sort

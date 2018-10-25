@@ -26,17 +26,11 @@
       <file leaf-file-name="AbstractResourceRepository.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Repository/AbstractResourceRepository.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" selection-start-line="6" selection-end-line="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EntityMetadataFilterTrait.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Repository/EntityMetadataFilterTrait.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-763">
-              <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
+            <state relative-caret-position="255">
+              <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
+              <folding>
+                <element signature="e#65#102#0#PHP" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -147,12 +141,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1540474965489</updated>
-      <workItem from="1540474967156" duration="2549000" />
+      <workItem from="1540474967156" duration="2902000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2549000" />
+    <option name="totallyTimeSpent" value="2902000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="27" width="1920" height="1053" extended-state="6" />
@@ -205,15 +199,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Repository/EntityMetadataFilterTrait.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-763">
-          <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
+        <state relative-caret-position="170">
+          <caret line="10" column="31" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Repository/AbstractResourceRepository.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        <state relative-caret-position="255">
+          <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
+          <folding>
+            <element signature="e#65#102#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
