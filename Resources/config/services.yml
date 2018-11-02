@@ -11,10 +11,10 @@ services:
 #   Controller
     Numerique1\Components\Restresources\Controller\ResourceController:
       tags: ['controller.service_arguments']
-#   Command
-    Numerique1\Components\Restresources\Command\CreateResourceFileCommand:
-        arguments: ['@maker.doctrine_helper', '@kernel']
-        tags: ['console.command']
+      #   Command
+#    Numerique1\Components\Restresources\Command\CreateResourceFileCommand:
+ #       arguments: ['@maker.doctrine_helper', '@kernel']
+  #      tags: ['console.command']
 #   FormType
     Numerique1\Components\Restresources\Form\Type\:
         resource: '../../Form/Type/'
