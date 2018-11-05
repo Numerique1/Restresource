@@ -19,9 +19,12 @@ class AbstractResourceRepository extends ServiceEntityRepository implements Reso
      */
     protected function addOrderBy(&$qb, $sort = array())
     {
-        foreach ($sort as $field => $type)
+        if ($sort)
         {
-            $qb->orderBy("{$qb->getRootAliases()[0]}.$field", $type);
+            foreach ($sort as $field => $type)
+            {
+                $qb->orderBy("{$qb->getRootAliases()[0]}.$field", $type);
+            }
         }
     }
 
