@@ -175,7 +175,7 @@ class ResourceController extends AbstractController
         $setter = "set" . $file['children'][$childResource];
         $data->$setter($parent);
         #Check granted
-        $this->denyAccessUnlessGranted(strtoupper("CREATE_{$childResource}"), $parent);
+        $this->denyAccessUnlessGranted(strtoupper("CAN_CREATE_{$childResource}"), $parent);
         $form = $this->createForm($childFile['type'], $data, ['method' => 'POST']);
         return $this->processFrom($request, $form, $data, 'POST');
     }
