@@ -34,7 +34,7 @@ trait EntityMetadataFilterTrait
                 ->getFieldNames();
             if (in_array($name, $fields))
             {
-                $this->createGuessExprFilter($qb, "LOWER({$qb->getRootAliases()[0]}.{$name})", $value);
+                $this->createGuessExprFilter($qb, "LOWER({$qb->getRootAliases()[0]}.{$name})", $name, $value);
             }
         }
 
@@ -44,16 +44,17 @@ trait EntityMetadataFilterTrait
     /**
      * @param QueryBuilder $qbtokenStorage
      * @param string       $path
+     * @param string       $name
      * @param string       $value
      */
-    public function createGuessExprFilter(QueryBuilder &$qb, string $path, string $value)
+    public function createGuessExprFilter(QueryBuilder &$qb, string $path, string $name, string $value)
     {
         list($expr, $value) = $this->guessExpr($value);
         if ($value !== '')
         {
             $qb->andWhere($qb->expr()
-                ->$expr($path, ":value"))
-                ->setParameter(':value', $value);
+                ->$expr($path, ":$name"))
+                ->setParameter(":$name", $value);
         }
         else
         {

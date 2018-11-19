@@ -1,0 +1,21 @@
+
+###> symfony/framework-bundle ###
+package.json
+/.env
+/public/bundles/
+/public/build/
+/public/storage/
+/var/
+/vendor/
+/node_modules/
+###< symfony/framework-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+
+###> PhpStorm ###
+/.idea/
+/.idea/*
+.idea/*
+###< PhpStorm ###
