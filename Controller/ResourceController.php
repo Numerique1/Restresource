@@ -71,7 +71,7 @@ class ResourceController extends AbstractController
             return new JsonResponse([], 200);
         }
         #Check granted
-        $this->denyAccessUnlessGranted(ResourceInterface::CAN_LIST, $data[0]);
+        $this->denyAccessUnlessGranted(ResourceInterface::CAN_LIST, $data);
         if ($request->get('wrap') === 'true') {
             $data = ['data' => $data];
         }
