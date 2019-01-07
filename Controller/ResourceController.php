@@ -276,7 +276,8 @@ class ResourceController extends AbstractController
                 ->getManager();
             $em->persist($resource);
             $em->flush();
-            return new JsonResponse($resource->getId(), $code, $headers, false);
+            $content = $request->get('_group') ? $this->get('serializer')->serialize($resource, 'json', ['groups' => [$request->get('_group')], 'datetime_format' => self::DATETIME_FORMAT]) : $resource->getId();
+            return new JsonResponse($content, $code, $headers,  $request->get('_group') ? true : false);
         }
         $errors = $this->get('serializer')
             ->serialize($this->getErrorMessages($form), 'json', []);
