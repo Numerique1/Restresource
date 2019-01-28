@@ -267,7 +267,7 @@ class ResourceController extends AbstractController
     protected function processFrom(Request $request, FormInterface $form, $resource, $method)
     {
         #Vars
-        $code = ($method === 'POST') ? 201 : 204;
+        $code = ($method === 'POST') ? 201 : 200;
         $headers = array();
         #Handle form
         $form->handleRequest($request);
