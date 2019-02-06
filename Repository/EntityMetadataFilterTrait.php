@@ -26,7 +26,7 @@ trait EntityMetadataFilterTrait
         }
         foreach ($filters as $name => $value)
         {
-            if (!is_string($value) || !is_integer($value))
+            if (!is_string($value) && !is_integer($value))
             {
                 continue;
             }
