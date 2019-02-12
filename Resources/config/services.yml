@@ -23,3 +23,7 @@ services:
     Numerique1\Components\Restresources\Event\Listener\BodyListener:
       tags:
         - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest}
+    'rest_resource.normalizer.object':
+        class: Numerique1\Components\Restresources\Normalizer\CustomObjectNormalizer
+        tags:
+            - { name: serializer.normalizer }
