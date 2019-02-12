@@ -36,16 +36,29 @@ class CustomObjectNormalizer extends ObjectNormalizer
         $normalizedData = parent::normalize($object, $format, $context);
         $metadata = $this->em->getClassMetadata(get_class($object));
 
-        foreach ($metadata->associationMappings as $field => $mapping) {
-            if (isset($normalizedData[$field])) {
-                if ($mapping['isCascadeDetach'] || $mapping['type'] == ClassMetadata::MANY_TO_MANY) {
+
+        foreach ($metadata->associationMappings as $field => $mapping)
+        {
+            if (isset($normalizedData[$field]))
+            {
+                if (in_array($mapping['type'], array(
+                    ClassMetadata::ONE_TO_MANY,
+                    ClassMetadata::MANY_TO_MANY
+                )))
+                {
                     $normalizedData["_$field"] = $normalizedData["$field"];
                     $data = $normalizedData["$field"];
                     $normalizedData["$field"] = array();
-                    foreach ($data as $child) {
+                    foreach ($data as $child)
+                    {
                         $normalizedData["$field"][] = $child['id'];
                     }
-                } elseif (in_array($mapping['type'], array(ClassMetadata::TO_ONE, ClassMetadata::MANY_TO_ONE))) {
+                }
+                elseif (in_array($mapping['type'], array(
+                    ClassMetadata::ONE_TO_ONE,
+                    ClassMetadata::MANY_TO_ONE
+                )))
+                {
                     $normalizedData["_$field"] = $normalizedData["$field"];
                     $normalizedData["$field"] = $normalizedData["$field"]['id'];
                 }
