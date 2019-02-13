@@ -1,6 +1,7 @@
 <?php
 namespace Numerique1\Components\Restresources\Normalizer;
 
+use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
@@ -73,6 +74,15 @@ class CustomObjectNormalizer extends ObjectNormalizer
      */
     public function supportsNormalization($data, $format = null)
     {
-        return \is_object($data) && !$data instanceof \Traversable && !$data instanceof \DateTime;
+        try {
+            if (!\is_object($data)) {
+                return false;
+            }
+            $metadata = $this->em->getClassMetadata(get_class($data));
+
+            return true;
+        } catch (MappingException $e) {
+            return false;
+        }
     }
 }
