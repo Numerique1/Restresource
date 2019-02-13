@@ -2,7 +2,9 @@
 
 namespace Numerique1\Components\Restresources\Controller;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Numerique1\Components\Restresources\Model\ResourceInterface;
+use Numerique1\Components\Restresources\Normalizer\CustomObjectNormalizer;
 use Numerique1\Components\Restresources\Repository\ResourceRepositoryInterface;
 use Numerique1\Components\Restresources\Service\ResourceFileProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,7 +13,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Class PrototypeController
@@ -21,9 +26,22 @@ class ResourceController extends AbstractController
 {
     const GROUP_MINIMAL = 'minimal';
     const DATETIME_FORMAT = "Y-m-d\TH:i:s.v\Z";
+
+    private function getSerializer()
+    {
+        $normalizer = new CustomObjectNormalizer($this->getDoctrine()
+            ->getManager(), new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader())));
+        $normalizer->setCircularReferenceLimit(1);
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+
+        return new Serializer(array($normalizer), array(new JsonEncoder()));
+    }
+
     /**
      * @Route("/api/{resource}", methods={"GET"})
-     * @param Request $request
+     * @param Request              $request
      * @param ResourceFileProvider $rfp
      * @param                      $resource
      *
@@ -36,13 +54,15 @@ class ResourceController extends AbstractController
             ->getManager();
         #Get configuration file {$resource}.resource.yml
         $file = $rfp->getFromResource($resource);
-        if (!in_array('CGET', $file['actions'])) {
+        if (!in_array('CGET', $file['actions']))
+        {
             throw new NotFoundHttpException();
         }
         $class = $file['class'];
         #Get $data
         $repository = $em->getRepository($class);
-        if (!$repository instanceof ResourceRepositoryInterface) {
+        if (!$repository instanceof ResourceRepositoryInterface)
+        {
             throw new \LogicException;
         }
         $parameters = $request->query->all();
@@ -52,10 +72,14 @@ class ResourceController extends AbstractController
         #Sort
         $arraySort = array();
         $sort = $parameters['_sort'] ?? null;
-        if ($sort) {
-            if (strpos($sort, '-') === 0) {
+        if ($sort)
+        {
+            if (strpos($sort, '-') === 0)
+            {
                 $arraySort = array(ltrim($sort, '-') => 'DESC');
-            } else {
+            }
+            else
+            {
                 $arraySort = array($sort => 'ASC');
             }
         }
@@ -67,22 +91,29 @@ class ResourceController extends AbstractController
         $offset = $parameters['_offset'] ?? null;
         unset($parameters['_offset']);
         $data = $repository->cget($parameters, $arraySort, $limit, $offset);
-        if (!isset($data[0])) {
+        if (!isset($data[0]))
+        {
             return new JsonResponse([], 200);
         }
         #Check granted
         $this->denyAccessUnlessGranted(ResourceInterface::CAN_LIST, $data);
-        if ($request->get('wrap') === 'true') {
+        if ($request->get('wrap') === 'true')
+        {
             $data = ['data' => $data];
         }
-        $content = $this->get('serializer')
-            ->serialize($data, 'json', ['groups' => [$group], 'datetime_format' => self::DATETIME_FORMAT]);
+
+        $content = $this->getSerializer()
+            ->serialize($data, 'json', [
+                'groups'          => [$group],
+                'datetime_format' => self::DATETIME_FORMAT
+            ]);
+
         return new JsonResponse($content, 200, [], true);
     }
 
     /**
      * @Route("/api/{resource}/{id}", methods={"GET"})
-     * @param Request $request
+     * @param Request              $request
      * @param ResourceFileProvider $rfp
      * @param                      $resource
      * @param                      $id
@@ -96,26 +127,32 @@ class ResourceController extends AbstractController
             ->getManager();
         #Get configuration file {$resource}.resource.yml
         $file = $rfp->getFromResource($resource);
-        if (!in_array('GET', $file['actions'])) {
+        if (!in_array('GET', $file['actions']))
+        {
             throw new NotFoundHttpException();
         }
         $class = $file['class'];
         #Get $data
         $repository = $em->getRepository($class);
-        if (!$repository instanceof ResourceRepositoryInterface) {
+        if (!$repository instanceof ResourceRepositoryInterface)
+        {
             throw new \LogicException;
         }
         $data = $repository->get($id);
         #Check granted
         $this->denyAccessUnlessGranted(ResourceInterface::CAN_RETRIEVE, $data);
-        $content = $this->get('serializer')
-            ->serialize($data, 'json', ['groups' => [$request->get('_group') ?? self::GROUP_MINIMAL], 'datetime_format' => self::DATETIME_FORMAT]);
+        $content = $this->getSerializer()
+            ->serialize($data, 'json', [
+                'groups'          => [$request->get('_group') ?? self::GROUP_MINIMAL],
+                'datetime_format' => self::DATETIME_FORMAT
+            ]);
+
         return New JsonResponse($content, 200, [], true);
     }
 
     /**
      * @Route("/api/{resource}",methods={"POST"})
-     * @param Request $request
+     * @param Request              $request
      * @param ResourceFileProvider $rfp
      * @param                      $resource
      *
@@ -126,7 +163,8 @@ class ResourceController extends AbstractController
     {
         #Get configuration file {$resource}.resource.yml
         $file = $rfp->getFromResource($resource);
-        if (!in_array('POST', $file['actions'])) {
+        if (!in_array('POST', $file['actions']))
+        {
             throw new NotFoundHttpException();
         }
         $class = $file['class'];
@@ -135,12 +173,13 @@ class ResourceController extends AbstractController
         #Check granted
         $this->denyAccessUnlessGranted(ResourceInterface::CAN_CREATE, $data);
         $form = $this->createForm($file['type'], $data, ['method' => 'POST']);
+
         return $this->processFrom($request, $form, $data, 'POST');
     }
 
     /**
      * @Route("/api/{resource}/{id}/{childResource}",methods={"POST"})
-     * @param Request $request
+     * @param Request              $request
      * @param ResourceFileProvider $rfp
      * @param                      $resource
      * @param                      $id
@@ -155,18 +194,21 @@ class ResourceController extends AbstractController
             ->getManager();
         #Get configuration file {$resource}.resource.yml
         $file = $rfp->getFromResource($resource);
-        if (!array_key_exists($childResource, $file['children'])) {
+        if (!array_key_exists($childResource, $file['children']))
+        {
             throw new NotFoundHttpException();
         }
         $childFile = $rfp->getFromResource($childResource);
-        if (!in_array('POST', $childFile['actions'])) {
+        if (!in_array('POST', $childFile['actions']))
+        {
             throw new NotFoundHttpException();
         }
         $class = $file['class'];
         $childClass = $childFile['class'];
         #Get $resource
         $repository = $em->getRepository($class);
-        if (!$repository instanceof ResourceRepositoryInterface) {
+        if (!$repository instanceof ResourceRepositoryInterface)
+        {
             throw new \LogicException;
         }
         #Get $data
@@ -177,12 +219,13 @@ class ResourceController extends AbstractController
         #Check granted
         $this->denyAccessUnlessGranted(strtoupper("CAN_CREATE_{$childResource}"), $parent);
         $form = $this->createForm($childFile['type'], $data, ['method' => 'POST']);
+
         return $this->processFrom($request, $form, $data, 'POST');
     }
 
     /**
      * @Route("/api/{resource}/{id}",methods={"PATCH"})
-     * @param Request $request
+     * @param Request              $request
      * @param ResourceFileProvider $rfp
      * @param                      $resource
      * @param                      $id
@@ -196,25 +239,28 @@ class ResourceController extends AbstractController
             ->getManager();
         #Get configuration file {$resource}.resource.yml
         $file = $rfp->getFromResource($resource);
-        if (!in_array('PATCH', $file['actions'])) {
+        if (!in_array('PATCH', $file['actions']))
+        {
             throw new NotFoundHttpException();
         }
         $class = $file['class'];
         #Get $data
         $repository = $em->getRepository($class);
-        if (!$repository instanceof ResourceRepositoryInterface) {
+        if (!$repository instanceof ResourceRepositoryInterface)
+        {
             throw new \LogicException;
         }
         $data = $repository->get($id);
         #Check granted
         $this->denyAccessUnlessGranted(ResourceInterface::CAN_UPDATE, $data);
         $form = $this->createForm($file['type'], $data, ['method' => 'PATCH']);
+
         return $this->processFrom($request, $form, $data, 'PATCH');
     }
 
     /**
      * @Route("/api/{resource}/{id}", methods={"DELETE"})
-     * @param Request $request
+     * @param Request              $request
      * @param ResourceFileProvider $rfp
      * @param                      $resource
      * @param                      $id
@@ -228,13 +274,15 @@ class ResourceController extends AbstractController
             ->getManager();
         #Get configuration file {$resource}.resource.yml
         $file = $rfp->getFromResource($resource);
-        if (!in_array('DELETE', $file['actions'])) {
+        if (!in_array('DELETE', $file['actions']))
+        {
             throw new NotFoundHttpException();
         }
         $class = $file['class'];
         #Get $data
         $repository = $em->getRepository($class);
-        if (!$repository instanceof ResourceRepositoryInterface) {
+        if (!$repository instanceof ResourceRepositoryInterface)
+        {
             throw new \LogicException;
         }
         $data = $repository->get($id);
@@ -242,25 +290,33 @@ class ResourceController extends AbstractController
         $this->denyAccessUnlessGranted(ResourceInterface::CAN_DELETE, $data);
         $em->remove($data);
         $em->flush();
+
         return New JsonResponse('deleted', 200, [], false);
     }
 
     private function getErrorMessages(FormInterface $form)
     {
         $errors = array();
-        foreach ($form->getErrors() as $key => $error) {
-            if ($form->isRoot()) {
+        foreach ($form->getErrors() as $key => $error)
+        {
+            if ($form->isRoot())
+            {
                 $errors['#'][] = $error->getMessage();
-            } else {
+            }
+            else
+            {
                 $errors[] = $error->getMessage();
             }
         }
         /** @var FormInterface $child */
-        foreach ($form->all() as $child) {
-            if ($child->isSubmitted() && !$child->isValid()) {
+        foreach ($form->all() as $child)
+        {
+            if ($child->isSubmitted() && !$child->isValid())
+            {
                 $errors[$child->getName()] = $this->getErrorMessages($child);
             }
         }
+
         return $errors;
     }
 
@@ -271,16 +327,23 @@ class ResourceController extends AbstractController
         $headers = array();
         #Handle form
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid())
+        {
             $em = $this->getDoctrine()
                 ->getManager();
             $em->persist($resource);
             $em->flush();
-            $content = $request->get('_group') ? $this->get('serializer')->serialize($resource, 'json', ['groups' => [$request->get('_group')], 'datetime_format' => self::DATETIME_FORMAT]) : $resource->getId();
-            return new JsonResponse($content, $code, $headers,  $request->get('_group') ? true : false);
+            $content = $request->get('_group') ? $this->getSerializer()
+                ->serialize($resource, 'json', [
+                    'groups'          => [$request->get('_group')],
+                    'datetime_format' => self::DATETIME_FORMAT
+                ]) : $resource->getId();
+
+            return new JsonResponse($content, $code, $headers, $request->get('_group') ? true : false);
         }
-        $errors = $this->get('serializer')
+        $errors = $this->getSerializer()
             ->serialize($this->getErrorMessages($form), 'json', []);
+
         return new JsonResponse($errors, 400, [], true);
     }
 }
