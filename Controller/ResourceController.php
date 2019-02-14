@@ -2,9 +2,7 @@
 
 namespace Numerique1\Components\Restresources\Controller;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Numerique1\Components\Restresources\Model\ResourceInterface;
-use Numerique1\Components\Restresources\Normalizer\CustomObjectNormalizer;
 use Numerique1\Components\Restresources\Repository\ResourceRepositoryInterface;
 use Numerique1\Components\Restresources\Service\ResourceFileProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,10 +11,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * Class PrototypeController
@@ -26,18 +20,6 @@ class ResourceController extends AbstractController
 {
     const GROUP_MINIMAL = 'minimal';
     const DATETIME_FORMAT = "Y-m-d\TH:i:s.v\Z";
-
-    private function getSerializer()
-    {
-        $normalizer = new CustomObjectNormalizer($this->getDoctrine()
-            ->getManager(), new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader())));
-        $normalizer->setCircularReferenceLimit(1);
-        $normalizer->setCircularReferenceHandler(function ($object) {
-            return $object->getId();
-        });
-
-        return new Serializer(array($normalizer), array(new JsonEncoder()));
-    }
 
     /**
      * @Route("/api/{resource}", methods={"GET"})
@@ -102,7 +84,7 @@ class ResourceController extends AbstractController
             $data = ['data' => $data];
         }
 
-        $content = $this->getSerializer()
+        $content = $this->get('serializer')
             ->serialize($data, 'json', [
                 'groups'          => [$group],
                 'datetime_format' => self::DATETIME_FORMAT
@@ -141,7 +123,7 @@ class ResourceController extends AbstractController
         $data = $repository->get($id);
         #Check granted
         $this->denyAccessUnlessGranted(ResourceInterface::CAN_RETRIEVE, $data);
-        $content = $this->getSerializer()
+        $content = $this->get('serializer')
             ->serialize($data, 'json', [
                 'groups'          => [$request->get('_group') ?? self::GROUP_MINIMAL],
                 'datetime_format' => self::DATETIME_FORMAT
@@ -333,7 +315,7 @@ class ResourceController extends AbstractController
                 ->getManager();
             $em->persist($resource);
             $em->flush();
-            $content = $request->get('_group') ? $this->getSerializer()
+            $content = $request->get('_group') ? $this->get('serializer')
                 ->serialize($resource, 'json', [
                     'groups'          => [$request->get('_group')],
                     'datetime_format' => self::DATETIME_FORMAT
@@ -341,7 +323,7 @@ class ResourceController extends AbstractController
 
             return new JsonResponse($content, $code, $headers, $request->get('_group') ? true : false);
         }
-        $errors = $this->getSerializer()
+        $errors = $this->get('serializer')
             ->serialize($this->getErrorMessages($form), 'json', []);
 
         return new JsonResponse($errors, 400, [], true);

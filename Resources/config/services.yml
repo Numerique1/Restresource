@@ -25,5 +25,6 @@ services:
         - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest}
     'rest_resource.normalizer.object':
         class: Numerique1\Components\Restresources\Normalizer\CustomObjectNormalizer
+        arguments: ['@doctrine.orm.default_entity_manager', '@serializer.normalizer.object', '@serializer.normalizer.datetime']
         tags:
             - { name: serializer.normalizer }
